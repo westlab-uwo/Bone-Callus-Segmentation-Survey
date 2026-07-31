@@ -9,7 +9,7 @@
 
 const SURVEY_CONFIG = {
 
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbztw8S-nYQOTgTeDGoqVD45l15N5BVxw13PTzyT6ZRByKmU_O6n5iOY0CtaT8yiu5toww/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyyJmRwc4HAsKdH131fo_wmHspMPkEeAThAjrU1DHfCdnSJ-bQkgaHxKcPwk2qwhQdlBg/exec",
 
   VIDEO_TUTORIAL_URL: "PASTE_VIDEO_LINK_HERE",
 
