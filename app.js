@@ -12,11 +12,11 @@ and what happens then user clicks a bottonn */
     step: 0,
     info: {
       name: "", affiliation: "", email: "",
-      role: "", role_other: "",
+      role: [], role_other: "",
       practice_type: "",
-      qualification: "", qualification_other: "",
+      qualifications: [], qualifications_other: "",
       fellowship_completed: "",
-      fellowship_subspecialty: "", subspecialty_other: "",
+      fellowship_subspecialty: [], subspecialty_other: "",
       years_practice: "",
     },
     globalRanking: null, // { labels: {algoId: 'Algorithm 3'}, order: [algoId,...] }
@@ -242,7 +242,7 @@ and what happens then user clicks a bottonn */
       </p>
 
       <div class="field">
-        <label>Current Professional Role</label>
+        <label>Current professional roles</label>
         <div class="radio-grid" id="f-role"></div>
         <input type="text" id="f-role-other" class="other-input" placeholder="Please specify"
               style="display:none; margin-top:8px;" value="${escapeHtml(i.role_other)}">
@@ -254,10 +254,10 @@ and what happens then user clicks a bottonn */
       </div>
 
       <div class="field">
-        <label>Please select your professional medical qualification</label>
+        <label>Please select your professional medical qualifications</label>
         <div class="radio-grid" id="f-qual"></div>
         <input type="text" id="f-qual-other" class="other-input" placeholder="Please specify"
-              style="display:none; margin-top:8px;" value="${escapeHtml(i.qualification_other)}">
+              style="display:none; margin-top:8px;" value="${escapeHtml(i.qualifications_other)}">
       </div>
 
       <div class="field">
@@ -285,30 +285,51 @@ and what happens then user clicks a bottonn */
     `;
 
     //Dr Yang here you can change the questions and the answers, you can also add more questions if you want, just make sure to add them to the config.js file
-    pillGroup(card.querySelector("#f-role"), CFG.ROLE_OPTIONS, i.role, v => {
-      i.role = v;
-      card.querySelector("#f-role-other").style.display = (v === "Other") ? "block" : "none";
-    }, "role");
+    checkboxGroup(
+      card.querySelector("#f-role"),
+      CFG.ROLE_OPTIONS,
+      i.role,
+      values => {
+        i.role = values;
+        card.querySelector("#f-role-other").style.display =
+          values.includes("Other") ? "block" : "none";
+      },
+      "role"
+    );
     card.querySelector("#f-role-other").oninput = e => { i.role_other = e.target.value; };
     if (i.role === "Other") card.querySelector("#f-role-other").style.display = "block";
 
     pillGroup(card.querySelector("#f-practice"), CFG.PRACTICE_TYPE_OPTIONS, i.practice_type,
       v => { i.practice_type = v; }, "practice");
 
-    pillGroup(card.querySelector("#f-qual"), CFG.QUALIFICATION_OPTIONS, i.qualification, v => {
-      i.qualification = v;
-      card.querySelector("#f-qual-other").style.display = (v === "Other") ? "block" : "none";
-    }, "qual");
-    card.querySelector("#f-qual-other").oninput = e => { i.qualification_other = e.target.value; };
-    if (i.qualification === "Other") card.querySelector("#f-qual-other").style.display = "block";
+    checkboxGroup(
+      card.querySelector("#f-qual"),
+      CFG.qualifications_OPTIONS,
+      i.qualifications,
+      values => {
+        i.qualifications = values;
+        card.querySelector("#f-qual-other").style.display =
+          values.includes("Other") ? "block" : "none";
+      },
+      "qual"
+    );
+    card.querySelector("#f-qual-other").oninput = e => { i.qualifications_other = e.target.value; };
+    if (i.qualifications === "Other") card.querySelector("#f-qual-other").style.display = "block";
 
     pillGroup(card.querySelector("#f-fellowship"), ["Yes", "No"], i.fellowship_completed,
       v => { i.fellowship_completed = v; }, "fellowship");
 
-    pillGroup(card.querySelector("#f-subspecialty"), CFG.SUBSPECIALTY_OPTIONS, i.fellowship_subspecialty, v => {
-      i.fellowship_subspecialty = v;
-      card.querySelector("#f-subspecialty-other").style.display = (v === "Other") ? "block" : "none";
-    }, "subspecialty");
+    checkboxGroup(
+      card.querySelector("#f-subspecialty"),
+      CFG.SUBSPECIALTY_OPTIONS,
+      i.fellowship_subspecialty,
+      values => {
+        i.fellowship_subspecialty = values;
+        card.querySelector("#f-subspecialty-other").style.display =
+          values.includes("Other") ? "block" : "none";
+      },
+      "subspecialty"
+    );
     card.querySelector("#f-subspecialty-other").oninput = e => { i.subspecialty_other = e.target.value; };
     if (i.fellowship_subspecialty === "Other") card.querySelector("#f-subspecialty-other").style.display = "block";
 
@@ -317,7 +338,13 @@ and what happens then user clicks a bottonn */
 
     card.querySelector("#btn-back").onclick = () => { state.step = STEP_COAUTHOR; render(); };
     card.querySelector("#btn-next").onclick = () => {
-      if (!i.role || !i.practice_type || !i.qualification || !i.fellowship_completed || !i.years_practice) {
+       if (
+          i.role.length === 0 ||
+          !i.practice_type ||
+          i.qualifications.length === 0 ||
+          !i.fellowship_completed ||
+          !i.years_practice
+        ) {
         card.querySelector("#info-error").innerHTML =
           `<div class="error-banner">Please answer every question before continuing.</div>`;
         return;
@@ -326,6 +353,48 @@ and what happens then user clicks a bottonn */
       render();
     };
   }
+
+  function checkboxGroup(container, options, selectedValues, onChange, name) {
+  container.innerHTML = "";
+
+  options.forEach(opt => {
+    const label = document.createElement("label");
+    label.className = "radio-pill";
+
+    const checked = selectedValues.includes(opt);
+
+    label.innerHTML = `
+      <input type="checkbox" name="${name}" value="${escapeHtml(opt)}">
+      ${escapeHtml(opt)}
+    `;
+
+    const input = label.querySelector("input");
+    input.checked = checked;
+
+    if (checked) {
+      label.classList.add("checked");
+    }
+
+    input.onchange = () => {
+      if (input.checked) {
+        if (!selectedValues.includes(opt)) {
+          selectedValues.push(opt);
+        }
+        label.classList.add("checked");
+      } else {
+        const index = selectedValues.indexOf(opt);
+        if (index !== -1) {
+          selectedValues.splice(index, 1);
+        }
+        label.classList.remove("checked");
+      }
+
+      onChange(selectedValues);
+    };
+
+    container.appendChild(label);
+  });
+}
 
   //This function builds the strip image for the ranking step, it takes the file name and the alt text as parameters
   function buildStripImage(fileBase, altText) {
@@ -618,11 +687,17 @@ and what happens then user clicks a bottonn */
       name: i.name,
       affiliation: i.affiliation,
       email: i.email,
-      role: i.role === "Other" ? i.role_other : i.role,
+      role: i.role.includes("Other")
+      ? [...i.role.filter(r => r !== "Other"), i.role_other]
+      : i.role,
       practice_type: i.practice_type,
-      qualification: i.qualification === "Other" ? i.qualification_other : i.qualification,
+      qualifications: i.qualifications.includes("Other")
+      ? [...i.qualifications.filter(q => q !== "Other"), i.qualifications_other]
+      : i.qualifications,
       fellowship_completed: i.fellowship_completed,
-      fellowship_subspecialty: i.fellowship_subspecialty === "Other" ? i.subspecialty_other : i.fellowship_subspecialty,
+      fellowship_subspecialty: i.fellowship_subspecialty.includes("Other")
+      ? [...i.fellowship_subspecialty.filter(s => s !== "Other"), i.subspecialty_other]
+      : i.fellowship_subspecialty,
       years_practice: i.years_practice,
       responses: [
         {
