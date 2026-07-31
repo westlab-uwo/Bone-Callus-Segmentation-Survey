@@ -154,6 +154,7 @@ and what happens then user clicks a bottonn */
         <li><span class="dot"></span> Please order the 7 anonymous algorithms from best to worst.</li>
         <li><span class="dot"></span> Click any thumbnail to zoom in before deciding.</li>
         <li><span class="dot"></span> Please make sure that you click SUBMIT at the end of this survey.</li>
+        <li><span class="dot"></span> You are permitted to submit more than one response. However, to avoid submitting multiple responses, if you would like to try again, please keep your survey open, and re-fresh your browser to start again. PLS DO NOT open the survey in a new browser. Only your last response will be saved.</li>
       </ul>
       <div class="btn-row">
         <button class="btn btn-primary" id="btn-start">Start</button>
