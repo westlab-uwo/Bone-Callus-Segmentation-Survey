@@ -214,21 +214,31 @@ and what happens then user clicks a bottonn */
   }
 
   //This function renders the questionnaire, where the user has to answer questions about his professional background, you can change the questions and the answers
-  function pillGroup(container, , currentValue, onSelect, name) {
-    container.innerHTML = "";
-    .forEach(opt => {
-      const pill = document.createElement("label");
-      pill.className = "radio-pill" + (currentValue === opt ? " checked" : "");
-      pill.innerHTML = `<input type="radio" name="${name}" value="${escapeHtml(opt)}"> ${escapeHtml(opt)}`;
-      pill.querySelector("input").checked = currentValue === opt;
-      pill.onclick = () => {
-        onSelect(opt);
-        container.querySelectorAll(".radio-pill").forEach(p => p.classList.remove("checked"));
-        pill.classList.add("checked");
-      };
-      container.appendChild(pill);
-    });
-  }
+function pillGroup(container, options, currentValue, onSelect, name) {
+  container.innerHTML = "";
+
+  options.forEach(opt => {
+    const pill = document.createElement("label");
+    pill.className = "radio-pill" + (currentValue === opt ? " checked" : "");
+
+    pill.innerHTML = `
+      <input type="radio" name="${name}" value="${escapeHtml(opt)}">
+      ${escapeHtml(opt)}
+    `;
+
+    pill.querySelector("input").checked = currentValue === opt;
+
+    pill.onclick = () => {
+      onSelect(opt);
+      container.querySelectorAll(".radio-pill").forEach(p => {
+        p.classList.remove("checked");
+      });
+      pill.classList.add("checked");
+    };
+
+    container.appendChild(pill);
+  });
+}
 
   //This function renders the questionnaire, where the user has to answer questions about his professional background, you can change the questions and the answers
   function renderQuestionnaire(card) {
