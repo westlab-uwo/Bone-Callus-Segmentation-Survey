@@ -240,7 +240,7 @@ function pillGroup(container, options, currentValue, onSelect, name) {
   });
 }
 
-console.log("ROLE:", CFG.ROLE);
+console.log("ROLE:", CFG.ROLE_OPTIONS);
 console.log("QUAL:", CFG.QUALIFICATION_OPTIONS);
 console.log("SUBSPECIALTY:", CFG.SUBSPECIALTY_OPTIONS);
   
