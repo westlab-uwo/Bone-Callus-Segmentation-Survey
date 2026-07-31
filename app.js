@@ -14,7 +14,7 @@ and what happens then user clicks a bottonn */
       name: "", affiliation: "", email: "",
       role: [], role_other: "",
       practice_type: "",
-      qualifications: [], qualifications_other: "",
+      qualification: [], qualification_other: "",
       fellowship_completed: "",
       fellowship_subspecialty: [], subspecialty_other: "",
       years_practice: "",
@@ -214,9 +214,9 @@ and what happens then user clicks a bottonn */
   }
 
   //This function renders the questionnaire, where the user has to answer questions about his professional background, you can change the questions and the answers
-  function pillGroup(container, options, currentValue, onSelect, name) {
+  function pillGroup(container, , currentValue, onSelect, name) {
     container.innerHTML = "";
-    options.forEach(opt => {
+    .forEach(opt => {
       const pill = document.createElement("label");
       pill.className = "radio-pill" + (currentValue === opt ? " checked" : "");
       pill.innerHTML = `<input type="radio" name="${name}" value="${escapeHtml(opt)}"> ${escapeHtml(opt)}`;
@@ -255,10 +255,10 @@ and what happens then user clicks a bottonn */
       </div>
 
       <div class="field">
-        <label>Please select your professional medical qualifications</label>
+        <label>Please select your professional medical qualification</label>
         <div class="radio-grid" id="f-qual"></div>
         <input type="text" id="f-qual-other" class="other-input" placeholder="Please specify"
-              style="display:none; margin-top:8px;" value="${escapeHtml(i.qualifications_other)}">
+              style="display:none; margin-top:8px;" value="${escapeHtml(i.qualification_other)}">
       </div>
 
       <div class="field">
@@ -298,24 +298,24 @@ and what happens then user clicks a bottonn */
       "role"
     );
     card.querySelector("#f-role-other").oninput = e => { i.role_other = e.target.value; };
-    if (i.role === "Other") card.querySelector("#f-role-other").style.display = "block";
+    if (i.role.includes("Other")) card.querySelector("#f-role-other").style.display = "block";
 
     pillGroup(card.querySelector("#f-practice"), CFG.PRACTICE_TYPE_OPTIONS, i.practice_type,
       v => { i.practice_type = v; }, "practice");
 
     checkboxGroup(
       card.querySelector("#f-qual"),
-      CFG.qualifications_OPTIONS,
-      i.qualifications,
+      CFG.qualification_OPTIONS,
+      i.qualification,
       values => {
-        i.qualifications = values;
+        i.qualification = values;
         card.querySelector("#f-qual-other").style.display =
           values.includes("Other") ? "block" : "none";
       },
       "qual"
     );
-    card.querySelector("#f-qual-other").oninput = e => { i.qualifications_other = e.target.value; };
-    if (i.qualifications === "Other") card.querySelector("#f-qual-other").style.display = "block";
+    card.querySelector("#f-qual-other").oninput = e => { i.qualification_other = e.target.value; };
+    if (i.qualification.includes("Other")) card.querySelector("#f-qual-other").style.display = "block";
 
     pillGroup(card.querySelector("#f-fellowship"), ["Yes", "No"], i.fellowship_completed,
       v => { i.fellowship_completed = v; }, "fellowship");
@@ -332,7 +332,7 @@ and what happens then user clicks a bottonn */
       "subspecialty"
     );
     card.querySelector("#f-subspecialty-other").oninput = e => { i.subspecialty_other = e.target.value; };
-    if (i.fellowship_subspecialty === "Other") card.querySelector("#f-subspecialty-other").style.display = "block";
+    if (i.fellowship_subspecialty.includes("Other")) card.querySelector("#f-subspecialty-other").style.display = "block";
 
     pillGroup(card.querySelector("#f-years"), CFG.YEARS_PRACTICE_OPTIONS, i.years_practice,
       v => { i.years_practice = v; }, "years");
@@ -342,7 +342,7 @@ and what happens then user clicks a bottonn */
        if (
           i.role.length === 0 ||
           !i.practice_type ||
-          i.qualifications.length === 0 ||
+          i.qualification.length === 0 ||
           !i.fellowship_completed ||
           !i.years_practice
         ) {
@@ -692,9 +692,9 @@ and what happens then user clicks a bottonn */
       ? [...i.role.filter(r => r !== "Other"), i.role_other]
       : i.role,
       practice_type: i.practice_type,
-      qualifications: i.qualifications.includes("Other")
-      ? [...i.qualifications.filter(q => q !== "Other"), i.qualifications_other]
-      : i.qualifications,
+      qualification: i.qualification.includes("Other")
+      ? [...i.qualification.filter(q => q !== "Other"), i.qualification_other]
+      : i.qualification,
       fellowship_completed: i.fellowship_completed,
       fellowship_subspecialty: i.fellowship_subspecialty.includes("Other")
       ? [...i.fellowship_subspecialty.filter(s => s !== "Other"), i.subspecialty_other]
