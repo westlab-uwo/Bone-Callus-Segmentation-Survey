@@ -33,7 +33,8 @@ const SURVEY_CONFIG = {
   /* You can modify these lists to suit your needs and change the options that the user 
   can select in the survey form. Make sure to keep the structure of the arrays intact. */
   ROLE_OPTIONS: [
-    "Resident/Fellow",
+    "Resident",
+    "Fellow",
     "Attending/Consultant Orthopedic Surgeon",
     "Department Head/Chief",
     "Academic Faculty",
@@ -46,6 +47,7 @@ const SURVEY_CONFIG = {
     "Private Hospital",
     "Private Practice",
     "Mixed Practice",
+    "N/A",
   ],
 
   QUALIFICATION_OPTIONS: [
@@ -75,6 +77,7 @@ const SURVEY_CONFIG = {
     "5-10",
     "11-20",
     ">20",
+    "N/A",
   ],
 
 };
