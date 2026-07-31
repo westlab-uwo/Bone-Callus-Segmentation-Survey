@@ -298,7 +298,7 @@ function pillGroup(container, options, currentValue, onSelect, name) {
     //Dr Yang here you can change the questions and the answers, you can also add more questions if you want, just make sure to add them to the config.js file
     checkboxGroup(
       card.querySelector("#f-role"),
-      CFG.ROLE_OPTIONS,
+      CFG.ROLE,
       i.role,
       values => {
         i.role = values;
@@ -310,12 +310,12 @@ function pillGroup(container, options, currentValue, onSelect, name) {
     card.querySelector("#f-role-other").oninput = e => { i.role_other = e.target.value; };
     if (i.role.includes("Other")) card.querySelector("#f-role-other").style.display = "block";
 
-    pillGroup(card.querySelector("#f-practice"), CFG.PRACTICE_TYPE_OPTIONS, i.practice_type,
+    pillGroup(card.querySelector("#f-practice"), CFG.PRACTICE_TYPE, i.practice_type,
       v => { i.practice_type = v; }, "practice");
 
     checkboxGroup(
       card.querySelector("#f-qual"),
-      CFG.qualification_OPTIONS,
+      CFG.QUALIFICATION_OPTIONS,
       i.qualification,
       values => {
         i.qualification = values;
