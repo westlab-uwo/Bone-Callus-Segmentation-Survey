@@ -240,6 +240,10 @@ function pillGroup(container, options, currentValue, onSelect, name) {
   });
 }
 
+console.log("ROLE:", CFG.ROLE);
+console.log("QUAL:", CFG.QUALIFICATION_OPTIONS);
+console.log("SUBSPECIALTY:", CFG.SUBSPECIALTY_OPTIONS);
+  
   //This function renders the questionnaire, where the user has to answer questions about his professional background, you can change the questions and the answers
   function renderQuestionnaire(card) {
     const i = state.info;
@@ -298,7 +302,7 @@ function pillGroup(container, options, currentValue, onSelect, name) {
     //Dr Yang here you can change the questions and the answers, you can also add more questions if you want, just make sure to add them to the config.js file
     checkboxGroup(
       card.querySelector("#f-role"),
-      CFG.ROLE,
+      CFG.ROLE_OPTIONS,
       i.role,
       values => {
         i.role = values;
@@ -310,7 +314,7 @@ function pillGroup(container, options, currentValue, onSelect, name) {
     card.querySelector("#f-role-other").oninput = e => { i.role_other = e.target.value; };
     if (i.role.includes("Other")) card.querySelector("#f-role-other").style.display = "block";
 
-    pillGroup(card.querySelector("#f-practice"), CFG.PRACTICE_TYPE, i.practice_type,
+    pillGroup(card.querySelector("#f-practice"), CFG.PRACTICE_TYPE_OPTIONS, i.practice_type,
       v => { i.practice_type = v; }, "practice");
 
     checkboxGroup(
@@ -367,6 +371,11 @@ function pillGroup(container, options, currentValue, onSelect, name) {
 
   function checkboxGroup(container, options, selectedValues, onChange, name) {
   container.innerHTML = "";
+
+  if (!options) {
+    console.error("Missing checkbox options for:", name);
+    return;
+  }
 
   options.forEach(opt => {
     const label = document.createElement("label");
