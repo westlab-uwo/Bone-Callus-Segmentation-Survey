@@ -1,19 +1,25 @@
 /*
   config.js
   ---------
+  This file contains the configuration for the survey, including the URL of the Google Apps Script
+  that handles form submissions, the URL of the video tutorial, and the list of algorithms being 
+  ranked. It also includes options for user roles, practice types, qualifications, subspecialties,
+  and years of practice.
 */
 
 const SURVEY_CONFIG = {
 
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxd_e4uSyZgOh1rE8uLySfeYFpQdau9MIaGzxX9HBouq0xwvRkiuVhyrYXbnkw461Io/exec",
 
-  VIDEO_TUTORIAL_URL: "PASTE_YOUR_VIDEO_LINK_HERE",
+  VIDEO_TUTORIAL_URL: "PASTE_VIDEO_LINK_HERE",
 
-  // Reference case/folder used for the images shown in the reference view
+  // Each file inside images/<GLOBAL_CASE_ID>/ is a single pre-composed
+  // strip image that already shows all 7 case columns baked in.
+  // We just display it as one big image, we don't rebuild the grid.
   GLOBAL_CASE_ID: "2",
-  GLOBAL_CASE_LABEL: "Reference case",
 
-  // The 7 algorithms being evaluated globally
+  /* The 7 algorithms being ranked. Experts never see "label", they only ever see "Algorithm 1" through "Algorithm 7", assigned in
+  random order each time the survey loads.*/
   ALGORITHMS: [
     { id: "yiffana_pt",       label: "Percentile Threshold (Yiffana)" },
     { id: "yiffana_blanket",  label: "Percentile Threshold + Blanket" },
@@ -24,13 +30,51 @@ const SURVEY_CONFIG = {
     { id: "pipeline_v10_90",  label: "Bone-Growth Contour (Negative)" },
   ],
 
-  DEGREE_OPTIONS: [
-    "Resident",
-    "Fellow",
-    "Attending / Consultant",
-    "Specialist",
-    "PhD Researcher",
+  /* You can modify these lists to suit your needs and change the options that the user 
+  can select in the survey form. Make sure to keep the structure of the arrays intact. */
+  ROLE_OPTIONS: [
+    "Resident/Fellow",
+    "Attending/Consultant Orthopedic Surgeon",
+    "Department Head/Chief",
+    "Academic Faculty",
     "Other",
+  ],
+
+  PRACTICE_TYPE_OPTIONS: [
+    "Academic Hospital",
+    "Public Hospital",
+    "Private Hospital",
+    "Private Practice",
+    "Mixed Practice",
+  ],
+
+  QUALIFICATION_OPTIONS: [
+    "MD",
+    "MBBS/MBChB",
+    "FRCS (Tr & Orth)",
+    "FRCSC (Canada)",
+    "Board Certified Orthopedic Surgeon",
+    "Fellowship-trained Orthopedic Surgeon",
+    "Other",
+  ],
+
+  SUBSPECIALTY_OPTIONS: [
+    "Arthroplasty/Joint Replacement",
+    "Sports Medicine",
+    "Trauma",
+    "Spine",
+    "Hand & Upper Extremity",
+    "Foot & Ankle",
+    "Pediatric Orthopedics",
+    "Orthopedic Oncology",
+    "Other",
+  ],
+
+  YEARS_PRACTICE_OPTIONS: [
+    "<5",
+    "5-10",
+    "11-20",
+    ">20",
   ],
 
 };

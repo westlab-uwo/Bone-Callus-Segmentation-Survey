@@ -1,3 +1,9 @@
+/*This file contains the CSS styles for the survey application. It defines the visual 
+appearance of various elements, including the body, cards, buttons, progress bars, 
+form fields, ranking lists, and lightbox. The styles use CSS variables for colors and 
+other properties to maintain consistency throughout the application. The file also 
+includes responsive design considerations and accessibility features. */
+
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
@@ -64,7 +70,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
   padding: 28px 20px 80px;
 }
 
-/* -------- top progress bar -------- */
+/* ----- top progress bar ------ */
 
 .progress-wrap {
   max-width: 96% !important;   /* fill 96% of the viewport width */
@@ -141,10 +147,10 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 .btn-primary:hover { background: #2A0D53; }
 .btn-primary:disabled { background: #B4A9C9; cursor: not-allowed; }
 
-.btn-secondary { background: transparent; color: var(--text-soft); border-color: var(--border); }
-.btn-secondary:hover { background: #F3F6F5; }
+.btn-secondary { background: rgba(61, 18, 118, 0.06); color: var(--text-soft); border-color: var(--border); }
+.btn-secondary:hover { background: rgba(61, 18, 118, 0.12); }
 
-/* -------- welcome screen -------- */
+/* --- welcome screen --- */
 
 .welcome-video {
   border-radius: 0;
@@ -176,7 +182,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
   flex-shrink: 0;
 }
 
-/* -------- form fields -------- */
+/* ----- form fields ----- */
 
 .field { margin-bottom: 18px; }
 .field label {
@@ -220,6 +226,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
   cursor: pointer;
   text-align: center;
   user-select: none;
+  background: rgba(61, 18, 118, 0.03);
   transition: all .12s ease;
 }
 .radio-pill input { display: none; }
@@ -230,7 +237,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
   font-weight: 600;
 }
 
-/* -------- reference row (per-case screen) -------- */
+/* - reference row (per-case screen) - */
 
 .ref-row,
 .ref-thumb {
@@ -302,7 +309,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
   width: 34px; height: 34px;
   border-radius: 0;
   border: 1px solid var(--border);
-  background: #fff;
+  background: rgba(61, 18, 118, 0.05);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   font-size: 15px;
@@ -329,7 +336,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
   color: #fff; font-size: 28px; background: none; border: none; cursor: pointer;
 }
 
-/* -------- review / thank you -------- */
+/* ---- review / thank you ---- */
 
 .summary-grid {
   display: grid; gap: 8px; margin: 18px 0;
@@ -360,4 +367,76 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
+}
+/* - strip images (each file already contains all 7 case columns) - */
+
+.ref-block { margin-bottom: 22px; }
+.ref-block-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.ref-block-caption {
+  font-size: 12.5px;
+  color: var(--text-soft);
+  margin-top: 6px;
+}
+
+.strip-img-wrap {
+  border: 1px solid var(--border);
+  background: #000;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+.strip-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* - algorithm block (ranking item: header + original row + algo row) - */
+
+.algo-block {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.algo-block-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.algo-block-head .rank-controls { margin-left: auto; }
+
+.algo-tag {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  border: 1px solid var(--border);
+  padding: 3px 9px;
+  background: #fff;
+}
+
+.algo-block-sublabel {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.other-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px;
+  padding: 11px 12px;
+  border-radius: 0;
+  border: 1px solid var(--border);
+  background: #FBFCFC;
+  color: var(--text);
 }

@@ -5,12 +5,7 @@
   Apps Script), then deploy it as a Web App. Full steps in SETUP.md.
 
   Writes ONE ROW PER (expert response x case) to the "Responses" sheet --
-  this "long" format is the easiest to pivot/analyze later (e.g. one
-  PivotTable: rows = image_id, columns = rank_1..rank_7, values = count).
-
-  Columns written:
-    timestamp | response_id | experience_years | degree | specialty |
-    institution | email | image_id | rank_1 | rank_2 | ... | rank_7
+  this "long" format is the easiest to pivot/analyze later.
 */
 
 const SHEET_NAME = "Responses";
@@ -28,11 +23,15 @@ function doPost(e) {
     const baseCols = [
       timestamp,
       responseId,
-      payload.experience_years || "",
-      payload.degree || "",
-      payload.specialty || "",
-      payload.institution || "",
+      payload.name || "",
+      payload.affiliation || "",
       payload.email || "",
+      payload.role || "",
+      payload.practice_type || "",
+      payload.qualification || "",
+      payload.fellowship_completed || "",
+      payload.fellowship_subspecialty || "",
+      payload.years_practice || "",
     ];
 
     (payload.responses || []).forEach(resp => {
@@ -61,8 +60,9 @@ function getOrCreateSheet() {
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
     sheet.appendRow([
-      "timestamp", "response_id", "experience_years", "degree", "specialty",
-      "institution", "email", "image_id",
+      "timestamp", "response_id", "name", "affiliation", "email",
+      "role", "practice_type", "qualification", "fellowship_completed",
+      "fellowship_subspecialty", "years_practice", "image_id",
       "rank_1_best", "rank_2", "rank_3", "rank_4", "rank_5", "rank_6", "rank_7_worst",
     ]);
     sheet.setFrozenRows(1);
@@ -76,8 +76,6 @@ function jsonResponse(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// Lets you sanity-check the deployment by opening the Web App URL directly
-// in a browser (GET request) -- should show {"ok":true,"msg":"..."}.
 function doGet() {
   return jsonResponse({ ok: true, msg: "Bone & Callus survey endpoint is live." });
 }
