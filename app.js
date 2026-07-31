@@ -7,7 +7,16 @@ and what happens then user clicks a bottonn */
 
   const CFG = SURVEY_CONFIG;
   const root = document.getElementById("app-root");
-
+  // Create or retrieve anonymous participant ID
+  let anonymousId = localStorage.getItem("survey_anonymous_id");
+  
+  if (!anonymousId) {
+    anonymousId = crypto.randomUUID();
+    localStorage.setItem("survey_anonymous_id", anonymousId);
+  }
+  
+  state.anonymous_id = anonymousId;
+  
   // app state
 
   const state = {
@@ -26,6 +35,15 @@ and what happens then user clicks a bottonn */
     submitting: false,
     submitError: null,
   };
+  
+  let anonymousId = localStorage.getItem("survey_anonymous_id");
+  
+  if (!anonymousId) {
+    anonymousId = crypto.randomUUID();
+    localStorage.setItem("survey_anonymous_id", anonymousId);
+  }
+  
+  state.anonymous_id = anonymousId;
 
   const STEP_COAUTHOR = 1;
   const STEP_QUESTIONNAIRE = 2;
@@ -606,6 +624,7 @@ and what happens then user clicks a bottonn */
     const i = state.info;
     return {
       submitted_at: new Date().toISOString(),
+      anonymous_id: state.anonymous_id,
       name: i.name,
       affiliation: i.affiliation,
       email: i.email,
