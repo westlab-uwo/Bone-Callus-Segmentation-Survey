@@ -171,7 +171,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 .fact-list li {
   display: flex;
   gap: 12px;
-  font-size: 14.5px;
+  font-size: 18px;
   color: var(--text);
   align-items: flex-start;
 }
@@ -187,7 +187,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 .field { margin-bottom: 18px; }
 .field label {
   display: block;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 6px;
   color: var(--text);
@@ -200,7 +200,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 .field select {
   width: 100%;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   padding: 11px 12px;
   border-radius: 0;
   border: 1px solid var(--border);
@@ -222,7 +222,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
   border: 1px solid var(--border);
   border-radius: 0;
   padding: 10px 12px;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   text-align: center;
   user-select: none;
@@ -264,7 +264,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 /* -------- ranking list -------- */
 
 .rank-instructions {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-soft);
   margin-bottom: 14px;
 }
@@ -288,7 +288,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
   width: 30px; height: 30px;
   border-radius: 0;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 14px; color: #fff;
+  font-weight: 700; font-size: 16px; color: #fff;
   flex-shrink: 0;
 }
 
@@ -312,7 +312,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
   background: rgba(61, 18, 118, 0.05);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text-soft);
 }
 .icon-btn:hover:not(:disabled) { background: var(--purple-soft); color: var(--purple); border-color: var(--purple); }
@@ -343,7 +343,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 }
 .summary-row {
   display: flex; justify-content: space-between;
-  font-size: 14px; padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 16px; padding: 8px 0; border-bottom: 1px solid var(--border);
 }
 .summary-row .k { color: var(--text-soft); }
 .summary-row .v { font-weight: 600; }
@@ -373,12 +373,12 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 .ref-block { margin-bottom: 22px; }
 .ref-block-title {
   font-weight: 700;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text);
   margin-bottom: 8px;
 }
 .ref-block-caption {
-  font-size: 12.5px;
+  font-size: 15px;
   color: var(--text-soft);
   margin-top: 6px;
 }
@@ -412,7 +412,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 .algo-block-head .rank-controls { margin-left: auto; }
 
 .algo-tag {
-  font-size: 12.5px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-soft);
   text-transform: uppercase;
@@ -433,7 +433,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 .other-input {
   width: 100%;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   padding: 11px 12px;
   border-radius: 0;
   border: 1px solid var(--border);
