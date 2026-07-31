@@ -7,16 +7,7 @@ and what happens then user clicks a bottonn */
 
   const CFG = SURVEY_CONFIG;
   const root = document.getElementById("app-root");
-  // Create or retrieve anonymous participant ID
-  let anonymousId = localStorage.getItem("survey_anonymous_id");
-  
-  if (!anonymousId) {
-    anonymousId = crypto.randomUUID();
-    localStorage.setItem("survey_anonymous_id", anonymousId);
-  }
-  
-  state.anonymous_id = anonymousId;
-  
+ 
   // app state
 
   const state = {
