@@ -8,10 +8,8 @@ and what happens then user clicks a bottonn */
   const CFG = SURVEY_CONFIG;
   const root = document.getElementById("app-root");
  
-  // app state
-
   const state = {
-    step: 0, // 0 welcome, 1 co-author info, 2 questionnaire, 3 ranking, 4 thanks
+    step: 0,
     info: {
       name: "", affiliation: "", email: "",
       role: "", role_other: "",
@@ -27,6 +25,7 @@ and what happens then user clicks a bottonn */
     submitError: null,
   };
   
+  // Create or retrieve anonymous participant ID
   let anonymousId = localStorage.getItem("survey_anonymous_id");
   
   if (!anonymousId) {
