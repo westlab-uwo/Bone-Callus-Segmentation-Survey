@@ -2,7 +2,7 @@
   config.js
   ---------
   This file contains the configuration for the survey, including the URL of the Google Apps Script
-  that handles form submissions, the URL of the video tutorial, and the list of algorithms being 
+  that handles form submissions and the list of algorithms being 
   ranked. It also includes options for user roles, practice types, qualifications, subspecialties,
   and years of practice.
 */
@@ -10,8 +10,6 @@
 const SURVEY_CONFIG = {
 
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx0zqaF2NX__uMNw12fh8wr5tjpq4C_MVMCbL6SbfConTEYDrXggynokEZ4YPUxnE6b/exec", //V1.6
-
-  VIDEO_TUTORIAL_URL: "PASTE_VIDEO_LINK_HERE",
 
   // Each file inside images/<GLOBAL_CASE_ID>/ is a single pre-composed
   // strip image that already shows all 7 case columns baked in.
