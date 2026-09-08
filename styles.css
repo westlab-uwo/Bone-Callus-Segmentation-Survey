@@ -152,21 +152,6 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; 
 
 /* --- welcome screen --- */
 
-.welcome-video {
-  border-radius: 0;
-  border: 1px solid var(--border);
-  aspect-ratio: 16/9;
-  background: #180B33;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #E5DDF2;
-  font-size: 14px;
-  margin: 18px 0 24px;
-  text-decoration: none;
-}
-.welcome-video:hover { background: #241147; }
-
 .fact-list { list-style: none; padding: 0; margin: 0 0 8px; display: grid; gap: 10px; }
 .fact-list li {
   display: flex;
