@@ -8,7 +8,8 @@
   this "long" format is the easiest to pivot/analyze later.
 */
 
-const SHEET_NAME = "Responses";
+const RESPONSES_SHEET = "Responses";
+const EXPERTS_SHEET = "Experts";
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -16,13 +17,14 @@ function doPost(e) {
 
   try {
     const payload = JSON.parse(e.postData.contents);
-    const sheet = getOrCreateSheet();
-    const responseId = Utilities.getUuid();
+    const expertsSheet = getOrCreateExpertsSheet();
+    const responsesSheet = getOrCreateResponsesSheet();
+    const participantId = Utilities.getUuid();
     const timestamp = payload.submitted_at || new Date().toISOString();
 
-    const baseCols = [
+    expertsSheet.appendRow([
       timestamp,
-      responseId,
+      participantId,
       payload.name || "",
       payload.affiliation || "",
       payload.email || "",
@@ -32,15 +34,15 @@ function doPost(e) {
       payload.fellowship_completed || "",
       payload.fellowship_subspecialty || "",
       payload.years_practice || "",
-    ];
+    ]);
 
     (payload.responses || []).forEach(resp => {
       const ranking = resp.ranking || [];
-      const row = baseCols.concat([resp.image_id]).concat(padTo(ranking, 7));
-      sheet.appendRow(row);
+      const row = [timestamp, participantId, resp.image_id].concat(padTo(ranking, 7));
+      responsesSheet.appendRow(row);
     });
 
-    return jsonResponse({ ok: true, response_id: responseId });
+    return jsonResponse({ ok: true, response_id: participantId });
   } catch (err) {
     return jsonResponse({ ok: false, error: String(err) });
   } finally {
@@ -54,15 +56,28 @@ function padTo(arr, n) {
   return out;
 }
 
-function getOrCreateSheet() {
+function getOrCreateExpertsSheet() {
   const ss = SpreadsheetApp.openById("1Wr7opYWTKZGU6ZsIzqg-g6zxawd2OyijYIk-MxSi0dgIo");
-  let sheet = ss.getSheetByName(SHEET_NAME);
+  let sheet = ss.getSheetByName(EXPERTS_SHEET);
   if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME);
+    sheet = ss.insertSheet(EXPERTS_SHEET);
     sheet.appendRow([
-      "timestamp", "response_id", "name", "affiliation", "email",
+      "timestamp", "participant_id", "name", "affiliation", "email",
       "role", "practice_type", "qualification", "fellowship_completed",
-      "fellowship_subspecialty", "years_practice", "image_id",
+      "fellowship_subspecialty", "years_practice",
+    ]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function getOrCreateResponsesSheet() {
+  const ss = SpreadsheetApp.openById("1Wr7opYWTKZGU6ZsIzqg-g6zxawd2OyijYIk-MxSi0dgIo");
+  let sheet = ss.getSheetByName(RESPONSES_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(RESPONSES_SHEET);
+    sheet.appendRow([
+      "timestamp", "participant_id", "image_id",
       "rank_1_best", "rank_2", "rank_3", "rank_4", "rank_5", "rank_6", "rank_7_worst",
     ]);
     sheet.setFrozenRows(1);
