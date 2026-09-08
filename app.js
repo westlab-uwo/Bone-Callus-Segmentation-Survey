@@ -1,4 +1,3 @@
-
 /*app.js is the brain of the survey, choses what to show on screen 
 and what happens then user clicks a bottonn */
 
@@ -145,10 +144,6 @@ and what happens then user clicks a bottonn */
         segmentation from this survey. Your responses provided in this survey will be used to
         identify the most accurate automated algorithm that segments bone and callus.
       </p>
-      <p class="subtitle" style="margin-bottom:8px;">Below is a brief demonstration of how to complete this survey.</p>
-      <a class="welcome-video" href="${CFG.VIDEO_TUTORIAL_URL}" target="_blank" rel="noopener">
-        &#9654;&nbsp; Watch the tutorial before you start
-      </a>
       <ul class="fact-list">
         <li><span class="dot"></span> Takes about 3 to 5 minutes, on a single ranking screen.</li>
         <li><span class="dot"></span> Please order the 7 anonymous algorithms from best to worst.</li>
