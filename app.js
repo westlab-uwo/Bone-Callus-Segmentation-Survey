@@ -492,6 +492,7 @@ console.log("SUBSPECIALTY:", CFG.SUBSPECIALTY_OPTIONS);
     refWrap.className = "ref-block";
     refWrap.innerHTML = `<div class="ref-block-title">FOR REFERENCE ONLY: Here are the 7 original ultrasound images</div>`;
     refWrap.appendChild(buildStripImage("original_and_experts_grid", "Shown below is the original images without any segmentation. Below each image, is an example expert segmentation obtained from one expert in Scotland. This is for your reference only and no action is required."));
+    card.appendChild(refWrap);
 
     const mvWrap = document.createElement("div");
     mvWrap.className = "ref-block";
