@@ -141,15 +141,15 @@ and what happens then user clicks a bottonn */
         This work builds on my prior postdoc work in Scotland (Edinburgh Royal Infirmary Hospital) and faculty work in
         Canada (Victoria Hospital; UWO). Our goal is to produce a consensus statement publication
         about the development of an automated and validated algorithm for bone and callus
-        segmentation from this survey. Your responses provided in this survey will be used to
+        segmentation from this survey. In this survey, rather than asking you to segment an image, we have developed 7 algorithms based on the expert responses that we received to date, that can automatically segment healing tissue (callus, hematoma and fracture gap). You are asked to rank which algorithms from best to worst based on your expert opinion. Your responses provided in this survey will be used to
         identify the most accurate automated algorithm that segments bone and callus based on your expert opinion.
       </p>
       <ul class="fact-list">
-        <li><span class="dot"></span> Takes about 3 to 5 minutes, on a single ranking screen.</li>
-        <li><span class="dot"></span> Please order the 7 anonymous algorithms from best to worst.</li>
-        <li><span class="dot"></span> Click any thumbnail to zoom in before deciding.</li>
-        <li><span class="dot"></span> Please make sure that you click SUBMIT at the end of this survey.</li>
-        <li><span class="dot"></span> You are permitted to submit more than one response. However, to avoid submitting multiple responses, if you would like to try again, please keep your survey open, and re-fresh your browser to start again. PLS DO NOT open the survey in a new browser. Only your last response will be saved.</li>
+        <li><span class="dot"></span> The survey takes 3 - 5 minutes.</li>
+        <li><span class="dot"></span> Please order the 7 algorithms from best to worst.</li>
+        <li><span class="dot"></span> Please note that if required, you can click any thumbnail to zoom in to help you make a decision.</li>
+        <li><span class="dot"></span> Please make sure that you click SUBMIT at the end of this survey to record your response.</li>
+        <li><span class="dot"></span> You are permitted to submit more than one response. However, to avoid submitting duplicate responses, if you would like to try again, please re-fresh your browser to start again. PLS DO NOT open the survey in a new browser. Only your last response will be saved.</li>
       </ul>
       <div class="btn-row">
         <button class="btn btn-primary" id="btn-start">Start</button>
