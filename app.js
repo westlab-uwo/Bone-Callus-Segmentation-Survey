@@ -490,14 +490,14 @@ console.log("SUBSPECIALTY:", CFG.SUBSPECIALTY_OPTIONS);
 
     const refWrap = document.createElement("div");
     refWrap.className = "ref-block";
-    refWrap.innerHTML = `<div class="ref-block-title">FOR REFERENCE ONLY: Here are the 7 original ultrasound images</div>`;
-    refWrap.appendChild(buildStripImage("original_and_experts_grid", "Shown below is the original images without any segmentation. Below each original ultrasound image, is an example expert segmentation provided by one expert in Scotland. This is for your reference only and no action is required."));
+    refWrap.innerHTML = `<div class="ref-block-title">FOR REFERENCE ONLY: Here are the 7 original ultrasound images without any segmentation. Below each original ultrasound image, is an example expert segmentation provided by one expert in Scotland. This is for reference only and no action is required.</div>`;
+    refWrap.appendChild(buildStripImage("original_and_experts_grid", "Original images and an example expert segmentation."));
     const capOriginal = document.createElement("div");
     capOriginal.className = "ref-block-caption";
     //capOriginal.textContent = "Original reference images, with one expert's segmentation shown as an example";
     refWrap.appendChild(capOriginal);
     card.appendChild(refWrap);
-
+    
     const mvWrap = document.createElement("div");
     mvWrap.className = "ref-block";
     mvWrap.innerHTML = `<div class="ref-block-title">FOR REFERENCE ONLY: Majority Vote</div>`;
