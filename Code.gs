@@ -72,7 +72,7 @@ function getOrCreateExpertsSheet() {
 }
 
 function getOrCreateResponsesSheet() {
-  const ss = SpreadsheetApp.openById("1Wr7opYWTKZGU6ZsIzqg-g6zxawd2OyijYIk-MxSi0dgIo");
+  const ss = SpreadsheetApp.openById("1zC207uLwmPvuWPZCZfDMtn3ZQw_BzRSXhtE2Y3U6w9w");
   let sheet = ss.getSheetByName(RESPONSES_SHEET);
   if (!sheet) {
     sheet = ss.insertSheet(RESPONSES_SHEET);
