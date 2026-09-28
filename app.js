@@ -149,7 +149,7 @@ and what happens then user clicks a bottonn */
         <li><span class="dot"></span> Please order the 7 algorithms from best to worst.</li>
         <li><span class="dot"></span> Please note that if required, you can click any thumbnail to zoom in to help you make a decision.</li>
         <li><span class="dot"></span> Please make sure that you click SUBMIT at the end of this survey to record your response.</li>
-        <li><span class="dot"></span> You are permitted to submit more than one response. However, to avoid submitting duplicate responses, if you would like to try again, please re-fresh your browser to start again. PLS DO NOT open the survey in a new browser. Only your last response will be saved.</li>
+        <li><span class="dot"></span> You are welcome to update your response by submitting again. Please ensure that each person uses their own device, as submissions from the same device are considered a single entry. Only the latest submission from each device will be saved.</li>
       </ul>
       <div class="btn-row">
         <button class="btn btn-primary" id="btn-start">Start</button>
