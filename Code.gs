@@ -11,6 +11,8 @@
 function asString(value) {
   return Array.isArray(value) ? value.join("; ") : (value || "");
 }
+const RESPONSES_SHEET = "Responses";
+const EXPERTS_SHEET = "Experts";
 
 function doPost(e) {
 
@@ -32,6 +34,9 @@ function doPost(e) {
     const payload = JSON.parse(e.postData.contents);
     const { participantSheet, responseSheet } = getOrCreateSheets();
     const responseId = Utilities.getUuid();
+    const expertsSheet = getOrCreateExpertsSheet();
+    const responsesSheet = getOrCreateResponsesSheet();
+    const participantId = Utilities.getUuid();
     const timestamp = payload.submitted_at || new Date().toISOString();
     const anonymousId = payload.anonymous_id || Utilities.getUuid();  //Even if the frontend fails to send the ID, the response is still tracked safely.
     Logger.log("Anonymous ID: " + anonymousId);
@@ -60,9 +65,27 @@ function doPost(e) {
         resp.image_id,
         ...padTo(ranking, 7)
       ]);
+    expertsSheet.appendRow([
+      timestamp,
+      participantId,
+      payload.name || "",
+      payload.affiliation || "",
+      payload.email || "",
+      payload.role || "",
+      payload.practice_type || "",
+      payload.qualification || "",
+      payload.fellowship_completed || "",
+      payload.fellowship_subspecialty || "",
+      payload.years_practice || "",
+    ]);
+
+    (payload.responses || []).forEach(resp => {
+      const ranking = resp.ranking || [];
+      const row = [timestamp, participantId, resp.image_id].concat(padTo(ranking, 7));
+      responsesSheet.appendRow(row);
     });
 
-    return jsonResponse({ ok: true, response_id: responseId });
+    return jsonResponse({ ok: true, response_id: participantId });
   } catch (err) {
     return jsonResponse({ ok: false, error: String(err) });
   } finally {
@@ -136,6 +159,31 @@ function getOrCreateSheets() {
       .getRange(1, 1, 1, participantHeaders.length)
       .setValues([participantHeaders]);
     participantSheet.setFrozenRows(1);
+function getOrCreateExpertsSheet() {
+  const ss = SpreadsheetApp.openById("1zC207uLwmPvuWPZCZfDMtn3ZQw_BzRSXhtE2Y3U6w9w");
+  let sheet = ss.getSheetByName(EXPERTS_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(EXPERTS_SHEET);
+    sheet.appendRow([
+      "timestamp", "participant_id", "name", "affiliation", "email",
+      "role", "practice_type", "qualification", "fellowship_completed",
+      "fellowship_subspecialty", "years_practice",
+    ]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function getOrCreateResponsesSheet() {
+  const ss = SpreadsheetApp.openById("1zC207uLwmPvuWPZCZfDMtn3ZQw_BzRSXhtE2Y3U6w9w");
+  let sheet = ss.getSheetByName(RESPONSES_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(RESPONSES_SHEET);
+    sheet.appendRow([
+      "timestamp", "participant_id", "image_id",
+      "rank_1_best", "rank_2", "rank_3", "rank_4", "rank_5", "rank_6", "rank_7_worst",
+    ]);
+    sheet.setFrozenRows(1);
   }
 
   // Responses sheet

@@ -2,7 +2,7 @@
   config.js
   ---------
   This file contains the configuration for the survey, including the URL of the Google Apps Script
-  that handles form submissions, the URL of the video tutorial, and the list of algorithms being 
+  that handles form submissions and the list of algorithms being 
   ranked. It also includes options for user roles, practice types, qualifications, subspecialties,
   and years of practice.
 */
@@ -10,6 +10,7 @@
 const SURVEY_CONFIG = {
 
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzk-ffnPrtdVqH7QNyN0aa_ZV4Y6WP-Z4xCoFBoybL3QD2URcyCM7gwabYrKOQO1DhhRA/exec", //260928_FINALSURVEY
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzfPGMya2G25ByKfsgDaPzrgEFOIEVJhx1PMVdLNFoHKgluM8cAJbzuPm2Sj1xNYbzAlw/exec", //260928_FinalSurvey6.0
 
   // Each file inside images/<GLOBAL_CASE_ID>/ is a single pre-composed
   // strip image that already shows all 7 case columns baked in.
@@ -31,7 +32,8 @@ const SURVEY_CONFIG = {
   /* You can modify these lists to suit your needs and change the options that the user 
   can select in the survey form. Make sure to keep the structure of the arrays intact. */
   ROLE_OPTIONS: [
-    "Resident/Fellow",
+    "Resident",
+    "Fellow",
     "Attending/Consultant Orthopedic Surgeon",
     "Department Head/Chief",
     "Academic Faculty",
@@ -44,6 +46,7 @@ const SURVEY_CONFIG = {
     "Private Hospital",
     "Private Practice",
     "Mixed Practice",
+    "N/A",
   ],
 
   QUALIFICATION_OPTIONS: [
@@ -73,6 +76,7 @@ const SURVEY_CONFIG = {
     "5-10",
     "11-20",
     ">20",
+    "N/A",
   ],
 
 };

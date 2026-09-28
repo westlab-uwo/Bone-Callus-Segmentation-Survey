@@ -1,4 +1,3 @@
-
 /*app.js is the brain of the survey, choses what to show on screen 
 and what happens then user clicks a bottonn */
 
@@ -7,18 +6,16 @@ and what happens then user clicks a bottonn */
 
   const CFG = SURVEY_CONFIG;
   const root = document.getElementById("app-root");
-
-  // app state
-
+ 
   const state = {
-    step: 0, // 0 welcome, 1 co-author info, 2 questionnaire, 3 ranking, 4 thanks
+    step: 0,
     info: {
       name: "", affiliation: "", email: "",
-      role: "", role_other: "",
+      role: [], role_other: "",
       practice_type: "",
-      qualification: "", qualification_other: "",
+      qualification: [], qualification_other: "",
       fellowship_completed: "",
-      fellowship_subspecialty: "", subspecialty_other: "",
+      fellowship_subspecialty: [], subspecialty_other: "",
       years_practice: "",
     },
     globalRanking: null, // { labels: {algoId: 'Algorithm 3'}, order: [algoId,...] }
@@ -26,6 +23,16 @@ and what happens then user clicks a bottonn */
     submitting: false,
     submitError: null,
   };
+  
+  // Create or retrieve anonymous participant ID
+  let anonymousId = localStorage.getItem("survey_anonymous_id");
+  
+  if (!anonymousId) {
+    anonymousId = crypto.randomUUID();
+    localStorage.setItem("survey_anonymous_id", anonymousId);
+  }
+  
+  state.anonymous_id = anonymousId;
 
   const STEP_COAUTHOR = 1;
   const STEP_QUESTIONNAIRE = 2;
@@ -202,22 +209,36 @@ and what happens then user clicks a bottonn */
   }
 
   //This function renders the questionnaire, where the user has to answer questions about his professional background, you can change the questions and the answers
-  function pillGroup(container, options, currentValue, onSelect, name) {
-    container.innerHTML = "";
-    options.forEach(opt => {
-      const pill = document.createElement("label");
-      pill.className = "radio-pill" + (currentValue === opt ? " checked" : "");
-      pill.innerHTML = `<input type="radio" name="${name}" value="${escapeHtml(opt)}"> ${escapeHtml(opt)}`;
-      pill.querySelector("input").checked = currentValue === opt;
-      pill.onclick = () => {
-        onSelect(opt);
-        container.querySelectorAll(".radio-pill").forEach(p => p.classList.remove("checked"));
-        pill.classList.add("checked");
-      };
-      container.appendChild(pill);
-    });
-  }
+function pillGroup(container, options, currentValue, onSelect, name) {
+  container.innerHTML = "";
 
+  options.forEach(opt => {
+    const pill = document.createElement("label");
+    pill.className = "radio-pill" + (currentValue === opt ? " checked" : "");
+
+    pill.innerHTML = `
+      <input type="radio" name="${name}" value="${escapeHtml(opt)}">
+      ${escapeHtml(opt)}
+    `;
+
+    pill.querySelector("input").checked = currentValue === opt;
+
+    pill.onclick = () => {
+      onSelect(opt);
+      container.querySelectorAll(".radio-pill").forEach(p => {
+        p.classList.remove("checked");
+      });
+      pill.classList.add("checked");
+    };
+
+    container.appendChild(pill);
+  });
+}
+
+console.log("ROLE:", CFG.ROLE_OPTIONS);
+console.log("QUAL:", CFG.QUALIFICATION_OPTIONS);
+console.log("SUBSPECIALTY:", CFG.SUBSPECIALTY_OPTIONS);
+  
   //This function renders the questionnaire, where the user has to answer questions about his professional background, you can change the questions and the answers
   function renderQuestionnaire(card) {
     const i = state.info;
@@ -231,7 +252,7 @@ and what happens then user clicks a bottonn */
       </p>
 
       <div class="field">
-        <label>Current Professional Role</label>
+        <label>Current professional roles</label>
         <div class="radio-grid" id="f-role"></div>
         <input type="text" id="f-role-other" class="other-input" placeholder="Please specify"
               style="display:none; margin-top:8px;" value="${escapeHtml(i.role_other)}">
@@ -274,39 +295,66 @@ and what happens then user clicks a bottonn */
     `;
 
     //Dr Yang here you can change the questions and the answers, you can also add more questions if you want, just make sure to add them to the config.js file
-    pillGroup(card.querySelector("#f-role"), CFG.ROLE_OPTIONS, i.role, v => {
-      i.role = v;
-      card.querySelector("#f-role-other").style.display = (v === "Other") ? "block" : "none";
-    }, "role");
+    checkboxGroup(
+      card.querySelector("#f-role"),
+      CFG.ROLE_OPTIONS,
+      i.role,
+      values => {
+        i.role = values;
+        card.querySelector("#f-role-other").style.display =
+          values.includes("Other") ? "block" : "none";
+      },
+      "role"
+    );
     card.querySelector("#f-role-other").oninput = e => { i.role_other = e.target.value; };
-    if (i.role === "Other") card.querySelector("#f-role-other").style.display = "block";
+    if (i.role.includes("Other")) card.querySelector("#f-role-other").style.display = "block";
 
     pillGroup(card.querySelector("#f-practice"), CFG.PRACTICE_TYPE_OPTIONS, i.practice_type,
       v => { i.practice_type = v; }, "practice");
 
-    pillGroup(card.querySelector("#f-qual"), CFG.QUALIFICATION_OPTIONS, i.qualification, v => {
-      i.qualification = v;
-      card.querySelector("#f-qual-other").style.display = (v === "Other") ? "block" : "none";
-    }, "qual");
+    checkboxGroup(
+      card.querySelector("#f-qual"),
+      CFG.QUALIFICATION_OPTIONS,
+      i.qualification,
+      values => {
+        i.qualification = values;
+        card.querySelector("#f-qual-other").style.display =
+          values.includes("Other") ? "block" : "none";
+      },
+      "qual"
+    );
     card.querySelector("#f-qual-other").oninput = e => { i.qualification_other = e.target.value; };
-    if (i.qualification === "Other") card.querySelector("#f-qual-other").style.display = "block";
+    if (i.qualification.includes("Other")) card.querySelector("#f-qual-other").style.display = "block";
 
     pillGroup(card.querySelector("#f-fellowship"), ["Yes", "No"], i.fellowship_completed,
       v => { i.fellowship_completed = v; }, "fellowship");
 
-    pillGroup(card.querySelector("#f-subspecialty"), CFG.SUBSPECIALTY_OPTIONS, i.fellowship_subspecialty, v => {
-      i.fellowship_subspecialty = v;
-      card.querySelector("#f-subspecialty-other").style.display = (v === "Other") ? "block" : "none";
-    }, "subspecialty");
+    checkboxGroup(
+      card.querySelector("#f-subspecialty"),
+      CFG.SUBSPECIALTY_OPTIONS,
+      i.fellowship_subspecialty,
+      values => {
+        i.fellowship_subspecialty = values;
+        card.querySelector("#f-subspecialty-other").style.display =
+          values.includes("Other") ? "block" : "none";
+      },
+      "subspecialty"
+    );
     card.querySelector("#f-subspecialty-other").oninput = e => { i.subspecialty_other = e.target.value; };
-    if (i.fellowship_subspecialty === "Other") card.querySelector("#f-subspecialty-other").style.display = "block";
+    if (i.fellowship_subspecialty.includes("Other")) card.querySelector("#f-subspecialty-other").style.display = "block";
 
     pillGroup(card.querySelector("#f-years"), CFG.YEARS_PRACTICE_OPTIONS, i.years_practice,
       v => { i.years_practice = v; }, "years");
 
     card.querySelector("#btn-back").onclick = () => { state.step = STEP_COAUTHOR; render(); };
     card.querySelector("#btn-next").onclick = () => {
-      if (!i.role || !i.practice_type || !i.qualification || !i.fellowship_completed || !i.years_practice) {
+       if (
+          i.role.length === 0 ||
+          !i.practice_type ||
+          i.qualification.length === 0 ||
+          !i.fellowship_completed ||
+          !i.years_practice
+        ) {
         card.querySelector("#info-error").innerHTML =
           `<div class="error-banner">Please answer every question before continuing.</div>`;
         return;
@@ -315,6 +363,53 @@ and what happens then user clicks a bottonn */
       render();
     };
   }
+
+  function checkboxGroup(container, options, selectedValues, onChange, name) {
+  container.innerHTML = "";
+
+  if (!options) {
+    console.error("Missing checkbox options for:", name);
+    return;
+  }
+
+  options.forEach(opt => {
+    const label = document.createElement("label");
+    label.className = "radio-pill";
+
+    const checked = selectedValues.includes(opt);
+
+    label.innerHTML = `
+      <input type="checkbox" name="${name}" value="${escapeHtml(opt)}">
+      ${escapeHtml(opt)}
+    `;
+
+    const input = label.querySelector("input");
+    input.checked = checked;
+
+    if (checked) {
+      label.classList.add("checked");
+    }
+
+    input.onchange = () => {
+      if (input.checked) {
+        if (!selectedValues.includes(opt)) {
+          selectedValues.push(opt);
+        }
+        label.classList.add("checked");
+      } else {
+        const index = selectedValues.indexOf(opt);
+        if (index !== -1) {
+          selectedValues.splice(index, 1);
+        }
+        label.classList.remove("checked");
+      }
+
+      onChange(selectedValues);
+    };
+
+    container.appendChild(label);
+  });
+}
 
   //This function builds the strip image for the ranking step, it takes the file name and the alt text as parameters
   function buildStripImage(fileBase, altText) {
@@ -383,7 +478,7 @@ and what happens then user clicks a bottonn */
       <div class="eyebrow">Page 3</div>
       <h2>Rank the 7 algorithms from best to worst</h2>
       <p class="subtitle">
-        In this survey, we had seven ultrasound images of tibial fracture patients treated
+        Below in this survey, you are looking at seven sample ultrasound images of tibial fracture patients treated
         with an intramedullary nail and imaged 6 weeks post-operatively using an ultrasound
         scanner.
       </p>
@@ -395,29 +490,33 @@ and what happens then user clicks a bottonn */
 
     const refWrap = document.createElement("div");
     refWrap.className = "ref-block";
-    refWrap.innerHTML = `<div class="ref-block-title">Here are the 7 original ultrasound images</div>`;
-    refWrap.appendChild(buildStripImage("original_and_experts_grid", "Original images and an example expert segmentation"));
+    refWrap.innerHTML = `
+    <div class="ref-block-title">
+    FOR REFERENCE ONLY: Here are the 7 original ultrasound images without any segmentation.
+    Below each original ultrasound image is an example expert segmentation provided by one expert in Scotland.
+    This is for reference only and no action is required.
+    </div>
+    `;
+    refWrap.appendChild(buildStripImage("original_and_experts_grid", "Original images and an example expert segmentation."));
     const capOriginal = document.createElement("div");
     capOriginal.className = "ref-block-caption";
-    capOriginal.textContent = "Original reference images, with one expert's segmentation shown as an example";
+    //capOriginal.textContent = "Original reference images, with one expert's segmentation shown as an example";
     refWrap.appendChild(capOriginal);
     card.appendChild(refWrap);
-
+    
     const mvWrap = document.createElement("div");
     mvWrap.className = "ref-block";
-    mvWrap.innerHTML = `<div class="ref-block-title">Majority Vote</div>`;
+    mvWrap.innerHTML = `<div class="ref-block-title">FOR REFERENCE ONLY: Majority Vote</div>`;
     mvWrap.appendChild(buildStripImage("majority_vote", "Majority vote"));
     const capMv = document.createElement("div");
     capMv.className = "ref-block-caption";
-    capMv.textContent = "This is the combination and agreement between the segmentations of 6 experts. " +
-      "It may not be an anatomically sound segmentation on its own. It simply reflects " +
-      "what all experts commonly segmented.";
+    capMv.textContent = "Consensus segmentation generated by majority voting across segmentations from six expert responses provided by experts in Scotland. "
     mvWrap.appendChild(capMv);
     card.appendChild(mvWrap);
 
     const instr = document.createElement("p");
     instr.className = "rank-instructions";
-    instr.innerHTML = "Please order the 7 segmentation algorithms (1 = best, 7 = worst). " +
+    instr.innerHTML = "RANKING ACTIVITY: Please order the 7 segmentation algorithms (1 = best, 7 = worst). " +
       "<strong>The numbered badge is your ranking position.</strong> " +
       "<strong>\u201cAlgorithm N\u201d is only a label</strong> to identify each option and carries no meaning on its own.";
     card.appendChild(instr);
@@ -603,14 +702,21 @@ and what happens then user clicks a bottonn */
     const i = state.info;
     return {
       submitted_at: new Date().toISOString(),
+      anonymous_id: state.anonymous_id,
       name: i.name,
       affiliation: i.affiliation,
       email: i.email,
-      role: i.role === "Other" ? i.role_other : i.role,
+      role: i.role.includes("Other")
+      ? [...i.role.filter(r => r !== "Other"), i.role_other]
+      : i.role,
       practice_type: i.practice_type,
-      qualification: i.qualification === "Other" ? i.qualification_other : i.qualification,
+      qualification: i.qualification.includes("Other")
+      ? [...i.qualification.filter(q => q !== "Other"), i.qualification_other]
+      : i.qualification,
       fellowship_completed: i.fellowship_completed,
-      fellowship_subspecialty: i.fellowship_subspecialty === "Other" ? i.subspecialty_other : i.fellowship_subspecialty,
+      fellowship_subspecialty: i.fellowship_subspecialty.includes("Other")
+      ? [...i.fellowship_subspecialty.filter(s => s !== "Other"), i.subspecialty_other]
+      : i.fellowship_subspecialty,
       years_practice: i.years_practice,
       responses: [
         {
@@ -636,6 +742,9 @@ and what happens then user clicks a bottonn */
       }
       await fetch(CFG.APPS_SCRIPT_URL, {
         method: "POST",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
         body: JSON.stringify(payload),
       });
       state.submitting = false;
