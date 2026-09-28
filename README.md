@@ -1,6 +1,4 @@
-"Encuesta de instalaciones industriales en la zona regional de la ciudad de Puebla"
-UDLAP - 179613
-Diego Oswaldo Rodriguez Collantes
+Link to survey: https://westlab-uwo.github.io/Bone-Callus-Segmentation-Survey/
 
 # Bone and Callus Segmentation - Expert Ranking Survey
 
