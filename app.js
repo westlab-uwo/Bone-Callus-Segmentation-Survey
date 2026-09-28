@@ -490,7 +490,13 @@ console.log("SUBSPECIALTY:", CFG.SUBSPECIALTY_OPTIONS);
 
     const refWrap = document.createElement("div");
     refWrap.className = "ref-block";
-    refWrap.innerHTML = `<div class="ref-block-title">FOR REFERENCE ONLY: Here are the 7 original ultrasound images without any segmentation. Below each original ultrasound image, is an example expert segmentation provided by one expert in Scotland. This is for reference only and no action is required.</div>`;
+    refWrap.innerHTML = `
+    <div class="ref-block-title">
+    FOR REFERENCE ONLY: Here are the 7 original ultrasound images without any segmentation.
+    Below each original ultrasound image is an example expert segmentation provided by one expert in Scotland.
+    This is for reference only and no action is required.
+    </div>
+    `;
     refWrap.appendChild(buildStripImage("original_and_experts_grid", "Original images and an example expert segmentation."));
     const capOriginal = document.createElement("div");
     capOriginal.className = "ref-block-caption";
