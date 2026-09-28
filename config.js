@@ -9,7 +9,7 @@
 
 const SURVEY_CONFIG = {
 
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx2_q8EYv6iArEXDql8mWoY5rAwcGcGcnWD2nTCglX-kFjqZgAgpnvih5Bm7ejIommBjg/exec", //260928_FinalSurvey5.0
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzfPGMya2G25ByKfsgDaPzrgEFOIEVJhx1PMVdLNFoHKgluM8cAJbzuPm2Sj1xNYbzAlw/exec", //260928_FinalSurvey6.0
 
   // Each file inside images/<GLOBAL_CASE_ID>/ is a single pre-composed
   // strip image that already shows all 7 case columns baked in.
