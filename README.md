@@ -1,3 +1,4 @@
+Link to survey: https://westlab-uwo.github.io/Bone-Callus-Segmentation-Survey/
 Link: https://westlab-uwo.github.io/Bone-Callus-Segmentation-Survey/
 
 "Encuesta de instalaciones industriales en la zona regional de la ciudad de Puebla"
