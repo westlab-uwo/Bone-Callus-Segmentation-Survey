@@ -2248,742 +2248,434 @@
    * - Background click to close
    */
 
-  function openLightbox(
-    src,
-    algorithmLabel = ""
-  ) {
-
-    /* -----------------------------------------------------
-       OUTER LIGHTBOX
-       ----------------------------------------------------- */
-
-    const box =
-      document.createElement(
-        "div"
-      );
-
-    box.className =
-      "lightbox";
-
-    box.style.touchAction =
-      "none";
-
-    /* -----------------------------------------------------
-       CLOSE BUTTON
-       ----------------------------------------------------- */
-
-    const closeBtn =
-      document.createElement(
-        "button"
-      );
-
-    closeBtn.className =
-      "close-x";
-
-    closeBtn.setAttribute(
-      "aria-label",
-      "Close image"
-    );
-
-    closeBtn.innerHTML =
-      "&times;";
-
-    /* -----------------------------------------------------
-       ALGORITHM LABEL
-       ----------------------------------------------------- */
-
-    const label =
-      document.createElement(
-        "div"
-      );
-
-    label.className =
-      "lightbox-algorithm-label";
-
-    if (algorithmLabel) {
-
-      label.textContent =
-        algorithmLabel;
-    }
-
-    /* -----------------------------------------------------
-       INSTRUCTIONS
-       ----------------------------------------------------- */
-
-    const hint =
-      document.createElement(
-        "div"
-      );
-
-    hint.className =
-      "lightbox-hint";
-
-    hint.textContent =
-      "Pinch or double-tap to zoom • Drag to move • Double-tap again to zoom further";
-
-    /* -----------------------------------------------------
-       VIEWPORT
-       ----------------------------------------------------- */
-
-    const viewport =
-      document.createElement(
-        "div"
-      );
-
-    viewport.className =
-      "lightbox-viewport";
-
-    viewport.style.touchAction =
-      "none";
-
-    viewport.style.overflow =
-      "hidden";
-
-    /* -----------------------------------------------------
-       IMAGE
-       ----------------------------------------------------- */
-
-    const img =
-      document.createElement(
-        "img"
-      );
-
-    img.src =
-      src;
-
-    img.alt =
-      algorithmLabel ||
-      "Zoomed image";
-
-    img.draggable =
-      false;
-
-    img.style.transformOrigin =
-      "center center";
-
-    img.style.userSelect =
-      "none";
-
-    img.style.webkitUserSelect =
-      "none";
-
-    img.style.webkitUserDrag =
-      "none";
-
-    viewport.appendChild(
-      img
-    );
-
-    box.appendChild(
-      closeBtn
-    );
-
-    if (algorithmLabel) {
-
-      box.appendChild(
-        label
-      );
-    }
-
-    box.appendChild(
-      viewport
-    );
-
-    box.appendChild(
-      hint
-    );
-
-    document.body.appendChild(
-      box
-    );
-
-    /* ------------------ ZOOM STATE ------------------ */
-
-    let scale = 1;
-
-    let translateX = 0;
-    let translateY = 0;
-
-    const MIN_SCALE = 1;
-    const MAX_SCALE = 5;
-
-    /* ------------------ DRAG STATE ------------------ */
-
-    let dragging = false;
-
-    let dragStartX = 0;
-    let dragStartY = 0;
-
-    let startTranslateX = 0;
-    let startTranslateY = 0;
-
-    /* ------------------ PINCH STATE ------------------ */
-
-    let pinchStartDistance = 0;
-    let pinchStartScale = 1;
-
-    /* ------------------ DOUBLE-TAP STATE ------------------ */
-
-    let lastTap = 0;
-
-    /* ------------------ UTILITY FUNCTIONS ------------------ */
-
-    function clamp(
-      value,
-      min,
-      max
-    ) {
-
-      return Math.max(
-        min,
-        Math.min(
-          max,
-          value
-        )
-      );
-    }
-
-    function distance(
-      t1,
-      t2
-    ) {
-
-      const dx =
-        t1.clientX -
-        t2.clientX;
-
-      const dy =
-        t1.clientY -
-        t2.clientY;
-
-      return Math.sqrt(
-        dx * dx +
-        dy * dy
-      );
-    }
-
-    /* ------------------ APPLY IMAGE TRANSFORM ------------------ */
-
-    function updateTransform() {
-
-      img.style.transform =
-        `translate3d(
-          ${translateX}px,
-          ${translateY}px,
-          0
-        ) scale(${scale})`;
-    }
-
-    /* ------------------ RESET ZOOM ------------------ */
-
-    function resetZoom() {
-
-      scale = 1;
-
-      translateX = 0;
-      translateY = 0;
-
-      updateTransform();
-    }
-
-    /* ------------------ DOUBLE TAP / DOUBLE CLICK ZOOM ------------------ */
-
-    function handleDoubleTap(
-      clientX,
-      clientY
-    ) {
-
-      if (
-        scale >= MAX_SCALE
-      ) {
-
-        resetZoom();
-
-        return;
-      }
-
-      const rect =
-        viewport.getBoundingClientRect();
-
-      const x =
-        clientX -
-        rect.left -
-        rect.width / 2;
-
-      const y =
-        clientY -
-        rect.top -
-        rect.height / 2;
-
-      const oldScale =
-        scale;
-
-      scale =
-        clamp(
-          scale * 2,
-          MIN_SCALE,
-          MAX_SCALE
-        );
-
-      const factor =
-        scale /
-          oldScale -
-        1;
-
-      translateX -=
-        x * factor;
-
-      translateY -=
-        y * factor;
-
-      updateTransform();
-    }
-
-    /* ------------------ MOUSE WHEEL ZOOM ------------------ */
-
-    viewport.addEventListener(
-      "wheel",
-      e => {
-
-        e.preventDefault();
-
-        if (
-          e.deltaY < 0
-        ) {
-
-          scale =
-            clamp(
-              scale * 1.15,
-              MIN_SCALE,
-              MAX_SCALE
-            );
-
-        } else {
-
-          scale =
-            clamp(
-              scale / 1.15,
-              MIN_SCALE,
-              MAX_SCALE
-            );
-        }
-
-        if (
-          scale === 1
-        ) {
-
-          translateX = 0;
-          translateY = 0;
-        }
-
-        updateTransform();
-      },
-      {
-        passive: false
-      }
-    );
-
-    /* ------------------ TOUCH START ------------------ */
-
-    viewport.addEventListener(
-      "touchstart",
-      e => {
-
-        /*
-         * TWO FINGERS
-         * Start pinch.
-         */
-
-        if (
-          e.touches.length === 2
-        ) {
-
-          e.preventDefault();
-
-          pinchStartDistance =
-            distance(
-              e.touches[0],
-              e.touches[1]
-            );
-
-          pinchStartScale =
-            scale;
-
-          dragging = false;
-
-          return;
-        }
-
-        /*
-         * ONE FINGER
-         */
-
-        if (
-          e.touches.length === 1
-        ) {
-
-          const now =
-            Date.now();
-
-          /*
-           * DOUBLE TAP
-           */
-
-          if (
-            now - lastTap < 300
-          ) {
-
-            e.preventDefault();
-
-            handleDoubleTap(
-              e.touches[0].clientX,
-              e.touches[0].clientY
-            );
-
-            lastTap = 0;
-
-            return;
-          }
-
-          lastTap = now;
-
-          /*
-           * START DRAGGING
-           * ONLY WHEN ZOOMED.
-           */
-
-          if (
-            scale > 1
-          ) {
-
-            dragging = true;
-
-            dragStartX =
-              e.touches[0].clientX;
-
-            dragStartY =
-              e.touches[0].clientY;
-
-            startTranslateX =
-              translateX;
-
-            startTranslateY =
-              translateY;
-          }
-        }
-      },
-      {
-        passive: false
-      }
-    );
-
-    /* ------------------ TOUCH MOVE ------------------ */
-
-    viewport.addEventListener(
-      "touchmove",
-      e => {
-
-        /*
-         * PINCH
-         */
-
-        if (
-          e.touches.length === 2
-        ) {
-
-          e.preventDefault();
-
-          const currentDistance =
-            distance(
-              e.touches[0],
-              e.touches[1]
-            );
-
-          if (
-            pinchStartDistance > 0
-          ) {
-
-            const ratio =
-              currentDistance /
-              pinchStartDistance;
-
-            scale =
-              clamp(
-                pinchStartScale *
-                  ratio,
-                MIN_SCALE,
-                MAX_SCALE
-              );
-
-            if (
-              scale === 1
-            ) {
-
-              translateX = 0;
-              translateY = 0;
-            }
-
-            updateTransform();
-          }
-
-          return;
-        }
-
-        /*
-         * ONE-FINGER DRAG
-         */
-
-        if (
-          e.touches.length === 1 &&
-          dragging &&
-          scale > 1
-        ) {
-
-          e.preventDefault();
-
-          const dx =
-            e.touches[0].clientX -
-            dragStartX;
-
-          const dy =
-            e.touches[0].clientY -
-            dragStartY;
-
-          translateX =
-            startTranslateX +
-            dx;
-
-          translateY =
-            startTranslateY +
-            dy;
-
-          updateTransform();
-        }
-      },
-      {
-        passive: false
-      }
-    );
-
-    /* ------------------ TOUCH END ------------------ */
-
-    viewport.addEventListener(
-      "touchend",
-      e => {
-
-        if (
-          e.touches.length < 2
-        ) {
-
-          pinchStartDistance =
-            0;
-        }
-
-        if (
-          e.touches.length === 0
-        ) {
-
-          dragging = false;
-        }
-      },
-      {
-        passive: false
-      }
-    );
-
-    /* ------------------ DESKTOP MOUSE DRAGGING ------------------ */
-
-    viewport.addEventListener(
-      "mousedown",
-      e => {
-
-        if (
-          scale <= 1
-        ) {
-
-          return;
-        }
-
-        e.preventDefault();
-
-        dragging = true;
-
-        dragStartX =
-          e.clientX;
-
-        dragStartY =
-          e.clientY;
-
-        startTranslateX =
-          translateX;
-
-        startTranslateY =
-          translateY;
-
-        viewport.style.cursor =
-          "grabbing";
-      }
-    );
-
-    function mouseMoveHandler(e) {
-
-      if (
-        !dragging ||
-        scale <= 1
-      ) {
-
-        return;
-      }
-
-      translateX =
-        startTranslateX +
-        (
-          e.clientX -
-          dragStartX
-        );
-
-      translateY =
-        startTranslateY +
-        (
-          e.clientY -
-          dragStartY
-        );
-
-      updateTransform();
-    }
-
-    function mouseUpHandler() {
-
-      dragging = false;
-
-      if (
-        document.body.contains(
-          viewport
-        )
-      ) {
-
-        viewport.style.cursor =
-          scale > 1
-            ? "grab"
-            : "default";
-      }
-    }
-
-    window.addEventListener(
-      "mousemove",
-      mouseMoveHandler
-    );
-
-    window.addEventListener(
-      "mouseup",
-      mouseUpHandler
-    );
-
-    /* ------------------ DESKTOP DOUBLE CLICK ------------------ */
-
-    viewport.addEventListener(
-      "dblclick",
-      e => {
-
-        e.preventDefault();
-
-        handleDoubleTap(
-          e.clientX,
-          e.clientY
-        );
-      }
-    );
-
-    /* ------------------ CLOSE LIGHTBOX ------------------ */
-
-    function closeLightbox() {
-
-      document.removeEventListener(
-        "keydown",
-        escHandler
-      );
-
-      window.removeEventListener(
-        "mousemove",
-        mouseMoveHandler
-      );
-
-      window.removeEventListener(
-        "mouseup",
-        mouseUpHandler
-      );
-
-      box.remove();
-    }
-
-    /* ------------------ CLOSE BUTTON ------------------ */
-
-    closeBtn.onclick = e => {
-
-      e.stopPropagation();
-
+function openLightbox(src, algorithmLabel = "") {
+  // Create the lightbox
+  const box = document.createElement("div");
+  box.className = "lightbox";
+
+  // Make the lightbox fill the entire screen
+  box.style.position = "fixed";
+  box.style.top = "0";
+  box.style.left = "0";
+  box.style.width = "100vw";
+  box.style.height = "100vh";
+  box.style.margin = "0";
+  box.style.padding = "0";
+  box.style.display = "flex";
+  box.style.alignItems = "center";
+  box.style.justifyContent = "center";
+  box.style.overflow = "hidden";
+  box.style.zIndex = "99999";
+  box.style.touchAction = "none";
+
+  // Create the viewport
+  const viewport = document.createElement("div");
+  viewport.className = "lightbox-viewport";
+
+  // Make the viewing window fill the available screen
+  viewport.style.position = "absolute";
+  viewport.style.top = "0";
+  viewport.style.left = "0";
+  viewport.style.width = "100vw";
+  viewport.style.height = "100vh";
+  viewport.style.maxWidth = "none";
+  viewport.style.maxHeight = "none";
+  viewport.style.margin = "0";
+  viewport.style.padding = "0";
+  viewport.style.display = "flex";
+  viewport.style.alignItems = "center";
+  viewport.style.justifyContent = "center";
+  viewport.style.overflow = "hidden";
+  viewport.style.touchAction = "none";
+
+  // Create the image
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = algorithmLabel || "Zoomed image";
+  img.draggable = false;
+
+  // Allow the image to grow beyond its original size when zoomed
+  img.style.position = "absolute";
+  img.style.left = "50%";
+  img.style.top = "50%";
+  img.style.width = "auto";
+  img.style.height = "auto";
+  img.style.maxWidth = "none";
+  img.style.maxHeight = "none";
+  img.style.margin = "0";
+  img.style.padding = "0";
+  img.style.transformOrigin = "center center";
+  img.style.userSelect = "none";
+  img.style.webkitUserDrag = "none";
+  img.style.touchAction = "none";
+
+  // Zoom state
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+
+  const MIN_SCALE = 1;
+  const MAX_SCALE = 5;
+
+  // Update the image transform
+  function updateTransform() {
+    img.style.transform =
+      `translate3d(calc(-50% + ${translateX}px), ` +
+      `calc(-50% + ${translateY}px), 0) ` +
+      `scale(${scale})`;
+  }
+
+  // Add the image to the viewport
+  viewport.appendChild(img);
+  box.appendChild(viewport);
+
+  // Add the algorithm label
+  if (algorithmLabel) {
+    const label = document.createElement("div");
+    label.className = "lightbox-label";
+    label.textContent = algorithmLabel;
+
+    label.style.position = "fixed";
+    label.style.top = "20px";
+    label.style.left = "50%";
+    label.style.transform = "translateX(-50%)";
+    label.style.zIndex = "100001";
+    label.style.pointerEvents = "none";
+
+    box.appendChild(label);
+  }
+
+  // Add the close button
+  const closeButton = document.createElement("button");
+  closeButton.className = "lightbox-close";
+  closeButton.innerHTML = "&times;";
+  closeButton.setAttribute("aria-label", "Close");
+
+  closeButton.style.position = "fixed";
+  closeButton.style.top = "20px";
+  closeButton.style.right = "20px";
+  closeButton.style.zIndex = "100002";
+
+  box.appendChild(closeButton);
+
+  // Add zoom instructions
+  const hint = document.createElement("div");
+  hint.className = "lightbox-hint";
+  hint.textContent = "Pinch or scroll to zoom • Drag when zoomed";
+
+  hint.style.position = "fixed";
+  hint.style.bottom = "20px";
+  hint.style.left = "50%";
+  hint.style.transform = "translateX(-50%)";
+  hint.style.zIndex = "100001";
+  hint.style.pointerEvents = "none";
+
+  box.appendChild(hint);
+
+  // Add the lightbox to the page
+  document.body.appendChild(box);
+
+  // Reset zoom
+  function resetZoom() {
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    updateTransform();
+  }
+
+  // Close the lightbox
+  function closeLightbox() {
+    box.remove();
+    document.removeEventListener("keydown", handleKeyDown);
+  }
+
+  // Close when Escape is pressed
+  function handleKeyDown(e) {
+    if (e.key === "Escape") {
       closeLightbox();
-    };
-
-    /* ------------------ CLICK BACKGROUND TO CLOSE ------------------ */
-
-    box.addEventListener(
-      "click",
-      e => {
-
-        /*
-         * Only close when clicking
-         * the dark background.
-         */
-
-        if (
-          e.target === box
-        ) {
-
-          closeLightbox();
-
-          return;
-        }
-
-        /*
-         * If the viewport itself is clicked
-         * while not zoomed, allow closing.
-         */
-
-        if (
-          e.target === viewport &&
-          scale === 1
-        ) {
-
-          closeLightbox();
-        }
-      }
-    );
-
-    /* ------------------ ESCAPE KEY ------------------ */
-
-    function escHandler(e) {
-
-      if (
-        e.key === "Escape"
-      ) {
-
-        closeLightbox();
-      }
     }
+  }
 
-    document.addEventListener(
-      "keydown",
-      escHandler
-    );
+  document.addEventListener("keydown", handleKeyDown);
 
-    /* ------------------ INITIAL STATE ------------------ */
+  // Close button
+  closeButton.addEventListener("click", closeLightbox);
+
+  // Close when clicking the background
+  box.addEventListener("click", (e) => {
+    if (e.target === box) {
+      closeLightbox();
+    }
+  });
+
+  // Prevent the image from being dragged by the browser
+  img.addEventListener("dragstart", (e) => {
+    e.preventDefault();
+  });
+
+  // Mouse wheel zoom
+  viewport.addEventListener(
+    "wheel",
+    (e) => {
+      e.preventDefault();
+
+      const rect = viewport.getBoundingClientRect();
+
+      // Position of the mouse relative to the centre of the viewport
+      const mouseX = e.clientX - (rect.left + rect.width / 2);
+      const mouseY = e.clientY - (rect.top + rect.height / 2);
+
+      const oldScale = scale;
+
+      if (e.deltaY < 0) {
+        scale = Math.min(MAX_SCALE, scale * 1.15);
+      } else {
+        scale = Math.max(MIN_SCALE, scale / 1.15);
+      }
+
+      // Keep the point underneath the mouse in the same location
+      if (scale !== oldScale) {
+        const ratio = scale / oldScale;
+
+        translateX = mouseX - (mouseX - translateX) * ratio;
+        translateY = mouseY - (mouseY - translateY) * ratio;
+      }
+
+      // Reset translation when returning to the original scale
+      if (scale === MIN_SCALE) {
+        translateX = 0;
+        translateY = 0;
+      }
+
+      updateTransform();
+    },
+    { passive: false }
+  );
+
+  // Double-click zoom
+  viewport.addEventListener("dblclick", (e) => {
+    e.preventDefault();
+
+    const rect = viewport.getBoundingClientRect();
+
+    // Position of the double-click relative to the centre of the viewport
+    const clickX = e.clientX - (rect.left + rect.width / 2);
+    const clickY = e.clientY - (rect.top + rect.height / 2);
+
+    if (scale === MIN_SCALE) {
+      const oldScale = scale;
+      scale = Math.min(MAX_SCALE, scale * 2);
+
+      const ratio = scale / oldScale;
+
+      translateX = clickX - (clickX - translateX) * ratio;
+      translateY = clickY - (clickY - translateY) * ratio;
+    } else {
+      resetZoom();
+    }
 
     updateTransform();
+  });
 
-    viewport.style.cursor =
-      "default";
+  // Touch / pinch zoom state
+  let initialDistance = null;
+  let initialScale = 1;
+
+  // Touch drag state
+  let lastTouchX = null;
+  let lastTouchY = null;
+
+  // Calculate the distance between two touches
+  function getTouchDistance(touch1, touch2) {
+    const dx = touch2.clientX - touch1.clientX;
+    const dy = touch2.clientY - touch1.clientY;
+
+    return Math.sqrt(dx * dx + dy * dy);
   }
+
+  // Calculate the centre point between two touches
+  function getTouchCenter(touch1, touch2) {
+    return {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2
+    };
+  }
+
+  // Touch start
+  viewport.addEventListener(
+    "touchstart",
+    (e) => {
+      e.preventDefault();
+
+      if (e.touches.length === 2) {
+        // Start pinch zoom
+        initialDistance = getTouchDistance(
+          e.touches[0],
+          e.touches[1]
+        );
+
+        initialScale = scale;
+
+        lastTouchX = null;
+        lastTouchY = null;
+      } else if (e.touches.length === 1 && scale > MIN_SCALE) {
+        // Start dragging when zoomed
+        lastTouchX = e.touches[0].clientX;
+        lastTouchY = e.touches[0].clientY;
+      }
+    },
+    { passive: false }
+  );
+
+  // Touch move
+  viewport.addEventListener(
+    "touchmove",
+    (e) => {
+      e.preventDefault();
+
+      if (e.touches.length === 2 && initialDistance !== null) {
+        // Pinch zoom
+        const currentDistance = getTouchDistance(
+          e.touches[0],
+          e.touches[1]
+        );
+
+        const center = getTouchCenter(
+          e.touches[0],
+          e.touches[1]
+        );
+
+        const rect = viewport.getBoundingClientRect();
+
+        const centerX =
+          center.x - (rect.left + rect.width / 2);
+
+        const centerY =
+          center.y - (rect.top + rect.height / 2);
+
+        const oldScale = scale;
+
+        scale =
+          initialScale *
+          (currentDistance / initialDistance);
+
+        scale = Math.max(
+          MIN_SCALE,
+          Math.min(MAX_SCALE, scale)
+        );
+
+        // Keep the pinch centre fixed while zooming
+        const ratio = scale / oldScale;
+
+        translateX =
+          centerX -
+          (centerX - translateX) * ratio;
+
+        translateY =
+          centerY -
+          (centerY - translateY) * ratio;
+
+        updateTransform();
+      } else if (
+        e.touches.length === 1 &&
+        scale > MIN_SCALE &&
+        lastTouchX !== null &&
+        lastTouchY !== null
+      ) {
+        // Drag the image when zoomed
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+
+        translateX += currentX - lastTouchX;
+        translateY += currentY - lastTouchY;
+
+        lastTouchX = currentX;
+        lastTouchY = currentY;
+
+        updateTransform();
+      }
+    },
+    { passive: false }
+  );
+
+  // Touch end
+  viewport.addEventListener(
+    "touchend",
+    (e) => {
+      if (e.touches.length < 2) {
+        initialDistance = null;
+      }
+
+      if (e.touches.length === 0) {
+        lastTouchX = null;
+        lastTouchY = null;
+      }
+    },
+    { passive: false }
+  );
+
+  // Mouse drag state
+  let isDragging = false;
+  let lastMouseX = null;
+  let lastMouseY = null;
+
+  // Mouse down
+  viewport.addEventListener("mousedown", (e) => {
+    if (scale <= MIN_SCALE) return;
+
+    e.preventDefault();
+
+    isDragging = true;
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+  });
+
+  // Mouse move
+  viewport.addEventListener("mousemove", (e) => {
+    if (!isDragging || scale <= MIN_SCALE) return;
+
+    e.preventDefault();
+
+    translateX += e.clientX - lastMouseX;
+    translateY += e.clientY - lastMouseY;
+
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+
+    updateTransform();
+  });
+
+  // Mouse up
+  viewport.addEventListener("mouseup", () => {
+    isDragging = false;
+    lastMouseX = null;
+    lastMouseY = null;
+  });
+
+  // Mouse leaves the viewport
+  viewport.addEventListener("mouseleave", () => {
+    isDragging = false;
+    lastMouseX = null;
+    lastMouseY = null;
+  });
+
+  // Prevent scrolling while interacting with the image
+  viewport.addEventListener(
+    "touchmove",
+    (e) => {
+      e.preventDefault();
+    },
+    { passive: false }
+  );
+
+  // Update the image once it has loaded
+  img.addEventListener("load", () => {
+    resetZoom();
+  });
+
+  // Initial transform
+  updateTransform();
+}
 
   /* ------------------ BUILD SUBMISSION PAYLOAD ------------------ */
 
